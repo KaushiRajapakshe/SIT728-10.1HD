@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Food Item Shop</title>
+    <meta name="description" content="basic template for Food Item Shop">
+    <meta name="author" content="SitePoint">
+    <meta property="og:title" content="Food Item Shop">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="basic template for Food Item Shop">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Custom Style Sheet-->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper navbar-size">
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li>
+                    <small><a class="nav-link" href="#"><span id="account"></span></a></small>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br/><br/>
+    <main class="main-body">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h3 id="heading" class="center-align">SIT728 - Blockchain Technologies and Real-World Applications -
+                        Food Shop Product Status Tracker
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Status Display Area -->
+            <div id="statusDisplay" class="status-indicator status-bought">
+                Current Status: Wrapping up your product
+            </div>
+            <h3 style= "margin-left: 20px;">Next:</h3>
+            <!-- Buttons to Change Status -->
+            <div class="text-center">
+                <button class="btn btn-warning btn-fixed" onclick="updateStatus('buy')">Wrapping up your
+                    product</button>
+                <br />
+                <button class="btn btn-info btn-fixed" onclick="updateStatus('processing')">Ready to pickup your
+                    order</button>
+                <br />
+                <button class="btn btn-success btn-fixed" onclick="updateStatus('ready')">Heading your way</button>
+                <br />
+                <button class="btn btn-success btn-fixed" onclick="updateStatus('delivered')">Delivered</button>
+                <br />
+            </div>
+        </div>
+
+        <script>
+            // JavaScript function to update the status display
+            function updateStatus(status) {
+                button.disabled = true;
+                const statusDisplay = document.getElementById('statusDisplay');
+
+                // Reset the class list to ensure no old classes remain
+                statusDisplay.classList.remove('status-bought', 'status-processing', 'status-ready', 'status-delivered');
+
+                // Update the status and class based on the status parameter
+                switch (status) {
+                    case 'buy':
+                        statusDisplay.innerText = 'Current Status: Wrapping up your product';
+                        statusDisplay.classList.add('status-bought');
+                        break;
+                    case 'processing':
+                        statusDisplay.innerText = 'Current Status: Ready to pickup your order';
+                        statusDisplay.classList.add('status-processing');
+                        break;
+                    case 'ready':
+                        statusDisplay.innerText = 'Current Status: Heading your way';
+                        statusDisplay.classList.add('status-ready');
+                        break;
+                    case 'delivered':
+                        statusDisplay.innerText = 'Current Status: Delivered';
+                        statusDisplay.classList.add('status-delivered');
+                        break;
+                    default:
+                        statusDisplay.innerText = 'Current Status: Buy Product';
+                        statusDisplay.classList.add('status-bought');
+                }
+            }
+        </script>
+        <div class="footer">
+            <div class="text">SIT728 - Blockchain Technologies and Real-World Applications 10.1 HD | s223681886 -
+                Kaushalya Rajapaksha</div>
+        </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/web3.min.js"></script>
+    <script src="js/truffle-contract.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
