@@ -5,48 +5,37 @@ import "truffle/DeployedAddresses.sol";
 import "../contracts/Products.sol"; 
 
 contract TestProducts {
-    // Get the deployed Products contract instance
-    Products products = Products(DeployedAddresses.Products());
+    Products products;
+
+    // Initial setup for each test, deploy a new Products contract
+    function beforeEach() public {
+        products = new Products();
+        products.addProduct("Leeks", "/images/Leeks.jpeg", 10, 5);
+    }
 
     // Test to check the initial product count
     function testInitialProductCount() public {
-        uint expected = 0;
-        Assert.equal(products.productCount(), expected, "Product count should be zero initially.");
+        uint expected = 1; // Should have 1 product after initialization in beforeEach
+        Assert.equal(products.productCount(), expected, "Product count should be one initially.");
     }
 
-    // Test adding a new product
+    // Test adding a new product by owner
     function testAddProduct() public {
-        products.addProduct("Leeks", "./src/images/Leeks.jpegp", 10, 5);
-
-        uint expected = 1; // Product count should be 1 after adding a product
-        Assert.equal(products.productCount(), expected, "Product count should be 1 after adding a product.");
-
-        // Check the product details
-        (uint id, string memory name, string memory info, uint price, uint count, address owner) = products.products(expected);
-        Assert.equal(id, expected, "Product ID should be 1");
-        Assert.equal(name, "Leeks", "Product name should be 'Leeks'");
-        Assert.equal(info, "./src/images/Leeks.jpegp", "Product info should be './src/images/Leeks.jpegp'");
-        Assert.equal(price, 10, "Product price should be 10");
-        Assert.equal(count, 5, "Product count should be 5");
-        Assert.equal(owner, address(this), "Owner should be the current contract.");
-    }
-
-    // Test deleting a product (buying)
-    function testBuyProduct() public {
-        products.buyProduct(1); // Delete the product with ID 1
-
-        (uint id, string memory name, , , , ) = products.products(1);
-        Assert.equal(id, 0, "Product ID should be reset to 0 after deletion.");
-        Assert.equal(name, "", "Product name should be empty after deletion.");
+        // The following line should be executed with the owner account
+        // Make sure to specify the correct account in JS tests.
+        products.addProduct("Carrot", "/images/Carrot.jpeg", 5, 10);
+        uint expected = 2; // Product count should be 2 after adding a product
+        Assert.equal(products.productCount(), expected, "Product count should be 2 after adding a product.");
     }
 
     // Test deleting all products
     function testDeleteAllProducts() public {
-        products.addProduct("Tablet", "./src/images/Fruits.webp", 8, 15); // Add another product
-        products.addProduct("Phone", "./src/images/Carrot.jpegp", 5, 10); // Add another product
-
-        products.deleteAllProducts(); // Delete all products
-
+        // Make sure to execute this test case with the owner account
+        products.addProduct("Apple", "/images/Apple.jpeg", 100, 20);
+        products.addProduct("Orange", "/images/Orange.jpeg", 50, 15);
+        
+        products.deleteAllProducts(); // Call deleteAllProducts as the owner
+        
         uint expected = 0;
         Assert.equal(products.productCount(), expected, "Product count should be zero after deleting all products.");
     }

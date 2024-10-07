@@ -28,7 +28,7 @@
             </ul>
         </div>
     </nav>
-    <br/><br/>
+    <br /><br />
     <main class="main-body">
         <div class="container">
             <div class="row">
@@ -41,9 +41,9 @@
 
             <!-- Status Display Area -->
             <div id="statusDisplay" class="status-indicator status-bought">
-                Current Status: Wrapping up your product
+                Current Status : Wrapping up your product
             </div>
-            <h3 style= "margin-left: 20px;">Next:</h3>
+            <h3 style="margin-left: 20px;">Next:</h3>
             <!-- Buttons to Change Status -->
             <div class="text-center">
                 <button class="btn btn-warning btn-fixed" onclick="updateStatus('buy')">Wrapping up your
@@ -90,6 +90,8 @@
                         statusDisplay.classList.add('status-bought');
                 }
             }
+            const productId = getQueryParameter("productId");
+            document.getElementById("product-id").innerText = `${productId}`;
         </script>
         <div class="footer">
             <div class="text">SIT728 - Blockchain Technologies and Real-World Applications 10.1 HD | s223681886 -

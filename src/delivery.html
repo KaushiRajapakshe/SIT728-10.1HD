@@ -28,7 +28,7 @@
             </ul>
         </div>
     </nav>
-    <br/><br/>
+    <br /><br />
     <main class="main-body">
         <div class="container">
             <div class="row">
@@ -41,61 +41,37 @@
 
             <!-- Status Display Area -->
             <div id="statusDisplay" class="status-indicator status-bought">
-                Current Status: Wrapping up your product
+                Current Status of Product Id <span id="product-id"></span> <span id="status"></span>
             </div>
-            <h3 style= "margin-left: 20px;">Next:</h3>
+            <h3 style="margin-left: 20px;">Next:</h3>
             <!-- Buttons to Change Status -->
             <div class="text-center">
-                <button class="btn btn-warning btn-fixed" onclick="updateStatus('buy')">Wrapping up your
+                <button class="btn btn-warning btn-fixed">Wrapping up your
                     product</button>
                 <br />
-                <button class="btn btn-info btn-fixed" onclick="updateStatus('processing')">Ready to pickup your
+                <button class="btn btn-info btn-fixed">Ready to pickup your
                     order</button>
                 <br />
-                <button class="btn btn-success btn-fixed" onclick="updateStatus('ready')">Heading your way</button>
+                <button class="btn btn-success btn-fixed">Heading your way</button>
                 <br />
-                <button class="btn btn-success btn-fixed" onclick="updateStatus('delivered')">Delivered</button>
+                <button class="btn btn-success btn-fixed" ">Delivered</button>
                 <br />
             </div>
         </div>
 
         <script>
-            // JavaScript function to update the status display
-            function updateStatus(status) {
-                button.disabled = true;
-                const statusDisplay = document.getElementById('statusDisplay');
-
-                // Reset the class list to ensure no old classes remain
-                statusDisplay.classList.remove('status-bought', 'status-processing', 'status-ready', 'status-delivered');
-
-                // Update the status and class based on the status parameter
-                switch (status) {
-                    case 'buy':
-                        statusDisplay.innerText = 'Current Status: Wrapping up your product';
-                        statusDisplay.classList.add('status-bought');
-                        break;
-                    case 'processing':
-                        statusDisplay.innerText = 'Current Status: Ready to pickup your order';
-                        statusDisplay.classList.add('status-processing');
-                        break;
-                    case 'ready':
-                        statusDisplay.innerText = 'Current Status: Heading your way';
-                        statusDisplay.classList.add('status-ready');
-                        break;
-                    case 'delivered':
-                        statusDisplay.innerText = 'Current Status: Delivered';
-                        statusDisplay.classList.add('status-delivered');
-                        break;
-                    default:
-                        statusDisplay.innerText = 'Current Status: Buy Product';
-                        statusDisplay.classList.add('status-bought');
-                }
+            function getQueryParameter(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
             }
-        </script>
-        <div class="footer">
-            <div class="text">SIT728 - Blockchain Technologies and Real-World Applications 10.1 HD | s223681886 -
-                Kaushalya Rajapaksha</div>
-        </div>
+            const productId = getQueryParameter(" productId"); console.log("Product ID from URL:", productId);
+            document.getElementById("product-id").innerText = `${productId}`;</script>
+                    <div class="footer">
+                        <div class="text">SIT728 - Blockchain Technologies and Real-World Applications 10.1 HD |
+                            s223681886 -
+                            Kaushalya
+                            Rajapaksha</div>
+                    </div>
     </main>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>

@@ -1,0 +1,50 @@
+[
+  {
+    "id": 0,
+    "productName": "Carrot",
+    "productInfo": "images/Carrot.jpeg",
+    "productPrice": "12.00",
+    "productCount": "12",
+    "status": 0
+  },
+  {
+    "id": 1,
+    "productName": "Apple",
+    "productInfo": "images/Fruits.webp",
+    "productPrice": "11.00",
+    "productCount": "100",
+    "status": 1
+  },
+  {
+    "id": 2,
+    "productName": "Leeks",
+    "productInfo": "images/Leeks.jpeg",
+    "productPrice": "22.00",
+    "productCount": "50",
+    "status": 2
+  },
+  {
+    "id": 3,
+    "productName": "Carrot",
+    "productInfo": "images/Carrot.jpeg",
+    "productPrice": "12.00",
+    "productCount": "12",
+    "status": 2
+  },
+  {
+    "id": 4,
+    "productName": "Apple",
+    "productInfo": "images/Fruits.webp",
+    "productPrice": "11.00",
+    "productCount": "100",
+    "status": 1
+  },
+  {
+    "id": 5,
+    "productName": "Leeks",
+    "productInfo": "images/Leeks.jpeg",
+    "productPrice": "22.00",
+    "productCount": "50",
+    "status": 3
+  }
+]

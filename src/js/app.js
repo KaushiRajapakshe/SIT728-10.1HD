@@ -5,8 +5,11 @@ App = {
   load: async () => {
     await App.loadWeb3()
     await App.loadAccount()
-    await App.loadContract()
+    await App.loadContractProduct()
+    await App.loadContractItem()
     await App.renderProducts()
+    await App.renderItems()
+    await App.renderStatus()
     // await App.deleteAllProducts()
     // await App.render()
   },
@@ -28,7 +31,7 @@ App = {
       App.web3Provider = web3.currentProvider
       window.web3 = new Web3(web3.currentProvider)
       // Acccounts always exposed
-      web3.eth.sendTransaction({/* ... */})
+      web3.eth.sendTransaction({/* ... */ })
     }
     // Non-dapp browsers...
     else {
@@ -44,7 +47,7 @@ App = {
     document.getElementById("account").innerText = `${App.account}`;
   },
 
-  loadContract: async () => {
+  loadContractProduct: async () => {
     // Create a JavaScript version of the smart contract
     const products = await $.getJSON('Products.json')
     App.contracts.Products = TruffleContract(products)
@@ -52,82 +55,203 @@ App = {
 
     // Hydrate the smart contract with values from the blockchain
     App.products = await App.contracts.Products.deployed()
+    const networkId = await web3.eth.net.getId(); // Get current network ID
+      const deployedNetwork = Products.networks[networkId]; // Get the deployed network info
+
+      if (deployedNetwork) {
+        const contractInstance = new web3.eth.Contract(
+        Products.abi,
+        deployedNetwork.address // Use the correct address from the JSON artifact
+        );
+        console.log("ppppppp", deployedNetwork.address, contractInstance)
+      } else {
+        console.error(`Contract not deployed on network with ID: ${networkId}`);
+      }
+  },
+
+  loadContractItem: async () => {
+    // Create a JavaScript version of the smart contract
+    const items = await $.getJSON('Items.json')
+    App.contracts.Items = TruffleContract(items)
+    App.contracts.Items.setProvider(App.web3Provider)
+
+    // Hydrate the smart contract with values from the blockchain
+    App.items = await App.contracts.Items.deployed()
   },
 
   // Render the list of products
   renderProducts: async () => {
-    // Clear the existing products in the #productsRow div
-    document.getElementById("productsRow").innerHTML = "";
-    try {
-      // Get the total number of products
-      const productCount = await App.products.productCount();
-      const productCountNumber = productCount.toNumber(); 
-      if (!App.products) {
-        console.error("Failed to load contract instance.");
-        return;
-      }
-    
-      // Iterate through each product and render its details
-      for (let i = 1; i <= productCountNumber; i++) {
-        const product = await App.products.products(i); // Fetch product by ID
+    if (window.location.pathname.includes('index.html')) {
+      try {
+        // Get the total number of products
+        const productCount = await App.products.productCount();
+        const productCountNumber = productCount.toNumber();
+        if (!App.products) {
+          console.error("Failed to load contract instance.");
+          return;
+        }
+        console.log("tests", productCountNumber)
+        // Iterate through each product and render its details
+        for (let i = 1; i <= productCountNumber; i++) {
+          const product = await App.products.products(i); // Fetch product by ID
+          // Map the product details from the struct
+          const productId = product[0];
+          const productName = product[1];
+          const productInfo = product[2];
+          const productPrice = product[3];
+          const productCount = product[4];
+          console.log("tests", productId)
 
-        // Map the product details from the struct
-        const productId = product.id.toNumber();
-        const productName = product.name;
-        const productInfo = product.info;
-        const productPrice = product.price.toNumber();
-        const productCount = product.count.toNumber();
-        const productOwner = product.owner;
+          var productRow = $('#productsRow');
+          var foodTemplate = $('#foodTemplate');
+          foodTemplate.find('.food-id').text(productId);
+          foodTemplate.find('.food-titile').text(productName);
+          foodTemplate.find('img').attr('src', productInfo);
+          foodTemplate.find('.food-price').text(productPrice);
+          foodTemplate.find('.food-count').text(productCount);
+          foodTemplate.find('.btn-buy').attr('data-id', productId);
+          foodTemplate.find('.btn-view').attr('data-id', productId);
+          productRow.append(foodTemplate.html());
 
-        // Create HTML for each product (Bootstrap card style)
-        const productCard = `
-          <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">Product ID: ${productId}</h5>
-                <h5 class="card-title">${productName}</h5>
-                <p class="card-text"><strong>Info:</strong> ${productInfo}</p>
-                <p class="card-text"><strong>Price:</strong> ${productPrice} ETH</p>
-                <p class="card-text"><strong>Count:</strong> ${productCount}</p>
-                <p class="card-text"><strong>Owner:</strong> ${productOwner}</p>
-                <div class="d-flex justify-content-between">
-                  <button class="btn btn-primary btn-buy" data-id="${productId}">Buy</button>
-                  <button class="btn btn-danger btn-cancel" data-id="${productId}">Cancel</button>
-                </div>
-              </div>
-            </div>
-          </div>`;
-      
-        // Append the product card to the #productsRow div
-        document.getElementById("productsRow").innerHTML += productCard;
+        }
+      } catch (error) {
+        console.error("Error loading contract:", error);
+
       }
-    } catch (error) {
-      console.error("Error loading contract:", error);
-    
+
+      App.bindProductButtons();
+      App.bindViewButtons();
     }
-
-    App.bindProductButtons();
   },
 
+  // Render the list of items
+  renderItems: async () => {
+    if (window.location.pathname.includes('home.html')) {
+      try {
+        // Get the total number of items
+        const itemCount = await App.items.itemCount();
+        const itemCountNumber = itemCount.toNumber();
+        if (!itemCountNumber) {
+          console.error("Failed to load contract instance.");
+          return;
+        }
+        for (let i = 1; i <= itemCountNumber; i++) {
+          // Iterate through each item and render its details
+          const item = await App.items.items(i); // Fetch item by ID
+          // Map the product details from the struct
+          const itemId = item[0];
+          const productId = item[1];
+          const productName = item[2];
+          const productInfo = item[3];
+          const productPrice = item[4];
+          const productCount = item[5];
 
-  bindProductButtons: function() {
+          var productRow = $('#productsRow');
+          var foodTemplate = $('#foodTemplate');
+          foodTemplate.find('.item-id').text(itemId);
+          foodTemplate.find('.food-id').text(productId);
+          foodTemplate.find('.food-titile').text(productName);
+          foodTemplate.find('img').attr('src', productInfo);
+          foodTemplate.find('.food-price').text(productPrice);
+          foodTemplate.find('.food-count').text(productCount);
+          foodTemplate.find('.btn-view').attr('data-id', itemId);
+          productRow.append(foodTemplate.html());
+        }
+
+      } catch (error) {
+        console.error("Error loading contract:", error);
+
+      }
+
+      App.bindProductButtons();
+      App.bindViewButtons();
+    }
+  },
+
+  // Render the item status
+  renderStatus: async () => {
+
+
+    if ((window.location.pathname.includes('delivery.html')) ||
+      (window.location.pathname.includes('status.html'))) {
+      try {
+        var itemID = document.getElementById('product-id').textContent;
+        // Get the total number of items
+        const item = await App.items.items(itemID); // Fetch item by ID
+        if (!item) {
+          console.error("Failed to load contract instance.");
+          return;
+        }
+        // Map the product details from the struct
+        const itemStatus = parseInt(item[6]);
+
+        console.log("vbhnj", itemStatus)
+
+        var status = '';
+        switch (itemStatus) {
+          case 0:
+            status = 'Current Status: Wrapping up your product';
+            break;
+          case 1:
+            status = 'Current Status: Ready to pickup your order';
+            break;
+          case 2:
+            status = 'Current Status: Heading your way';
+            break;
+          case 3:
+            status = 'Current Status: Delivered';
+            break;
+          default:
+            status = 'Current Status: Buy Product';
+        }
+        document.getElementById("status").innerText = `${status}`;
+
+        console.log("vbhnj", status)
+
+
+      } catch (error) {
+        console.error("Error loading contract:", error);
+
+      }
+
+      App.bindProductButtons();
+      App.bindViewButtons();
+    }
+  },
+
+  bindProductButtons: function () {
     // Attach click event to buy buttons
     $(document).on('click', '.btn btn-default btn-buy', App.buyProduct);
   },
 
-  buyProduct: async (event) => {
-    const productId = $(event.target).data('id');
-    await App.products.buyProduct(productId, { from: App.account });
-    window.location.href = "delivery.html";
-  },
-
-  bindEvents: function() {
+  bindEvents: function () {
     $(document).on('submit', '.productForm', App.addProduct);
   },
 
-  bindEvents: function() {
+  bindViewButtons: function () {
+    // Attach click event to buy buttons
+    $(document).on('click', '.btn btn-default btn-view', App.changeStatus);
+  },
+
+  bindEvents: function () {
     // Attach click event to buy buttons
     $(document).on('click', '.btn btn-default btn-buy', App.buyProduct);
+  },
+
+  bindEvents: function () {
+    // Attach click event to buy buttons
+    $(document).on('click', '.btn btn-default btn-view', App.changeStatus);
+  },
+
+
+  buyProduct: async (productId) => {
+    const item = await App.products.products(productId); // Fetch item by ID
+    const id = parseInt(item[0]);
+    const productName = item[1];
+    const productInfo = item[2];
+    const productPrice = parseInt(item[3]);
+    await App.items.buyItem(id, productName, productInfo, productPrice, { from: App.account });
+    // window.location.href = "delivery.html";
   },
 
   addProduct: async () => {
@@ -138,7 +262,11 @@ App = {
     var count = parseInt($('#productCount').val());
     console.log(name, info, price, count)
     await App.products.addProduct(name, info, price, count, { from: App.account });
-    window.location.href = "status.html";
+  },
+
+  changeStatus: async (productId) => {
+    console.log("Product ID:", productId);
+    window.location.href = `delivery.html?productId=${productId}`;
   },
 
   setLoading: (boolean) => {
